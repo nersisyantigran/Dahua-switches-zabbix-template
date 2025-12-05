@@ -1,0 +1,117 @@
+zabbix_export:
+  version: "7.0"
+
+  template_groups:
+    - uuid: "9570f072c6b74aa7a705e8d97a34df46"
+      name: "Dahua switches"
+
+  templates:
+    - uuid: "617502c087bc45e6bc12931cb8755ddf"
+      template: "Dahua Switch"
+      name: "Dahua Switch"
+      description: |
+        Full dynamic Dahua switch template with port discovery, traffic, errors, basic system info.
+
+      groups:
+        - name: "Dahua switches"
+
+      items:
+        - uuid: "3858e40f588747a58fb4a28e9831e5f1"
+          name: "System description"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.2.1.1.1.0"
+          key: "system.description"
+          delay: "1h"
+          value_type: TEXT
+
+        - uuid: "f344827e4aa7445aa1eee505abb9e741"
+          name: "System name"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.2.1.1.5.0"
+          key: "system.name"
+          delay: "1h"
+          value_type: TEXT
+
+        - uuid: "b46eb9fa0eba4d459b7c78a431c093e0"
+          name: "System uptime"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.2.1.1.3.0"
+          key: "system.uptime"
+          delay: "1m"
+          value_type: FLOAT
+          units: "s"
+
+        - uuid: "8f3e0d18778d419393f92516f923bb87"
+          name: "Dahua Software Revision"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.1.1.0"
+          key: "dahua.softwareRevision"
+          delay: "6h"
+          value_type: TEXT
+
+        - uuid: "8c49c95dd84849e0a69b95f4f008f663"
+          name: "Dahua Hardware Revision"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.1.2.0"
+          key: "dahua.hardwareRevision"
+          delay: "6h"
+          value_type: TEXT
+
+        - uuid: "2cbb4fea87f74de2904a187e7a69438f"
+          name: "Dahua Device Type"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.2.6.0"
+          key: "dahua.deviceType"
+          delay: "6h"
+          value_type: TEXT
+
+        - uuid: "6ec192dee6fc4614964930925d05d032"
+          name: "Dahua Device Status"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.2.8.0"
+          key: "dahua.deviceStatus"
+          delay: "5m"
+          value_type: TEXT
+
+        - uuid: "c1803499e66d4ed69d654352d3b46826"
+          name: "Dahua Machine Name"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.2.9.0"
+          key: "dahua.machineName"
+          delay: "1h"
+          value_type: TEXT
+
+        - uuid: "f9b85468efd14171b2a58ddca830cb3e"
+          name: "Dahua CPU Usage"
+          type: SNMP_AGENT
+          snmp_oid: "1.3.6.1.4.1.1004849.2.1.3.0"
+          key: "dahua.cpuUsage"
+          delay: "1m"
+          value_type: UNSIGNED
+          units: "%"
+
+      discovery_rules:
+        - uuid: "91f3066bb5134e2293b588319e853052"
+          name: "Interface discovery"
+          type: SNMP_AGENT
+          key: "if.discovery"
+          delay: "1h"
+          snmp_oid: "discovery[{#IFINDEX},1.3.6.1.2.1.2.2.1.1]"
+
+          item_prototypes:
+            - uuid: "f3ff011b8e0246cc8e74198a528a0035"
+              name: "Port {#IFINDEX} status"
+              type: SNMP_AGENT
+              snmp_oid: "1.3.6.1.2.1.2.2.1.8.{#IFINDEX}"
+              key: "port.status[{#IFINDEX}]"
+              delay: "30s"
+              value_type: UNSIGNED
+
+            - uuid: "6e7377da1b9e4165a0a8e2fdf3cc2f98"
+              name: "Port {#IFINDEX} speed"
+              type: SNMP_AGENT
+              snmp_oid: "1.3.6.1.2.1.2.2.1.5.{#IFINDEX}"
+              key: "port.speed[{#IFINDEX}]"
+              delay: "30s"
+              value_type: UNSIGNED
+              units: "bps"
