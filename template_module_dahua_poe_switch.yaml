@@ -9,6 +9,30 @@ zabbix_export:
     - uuid: "617502c087bc45e6bc12931cb8755ddf"
       template: "Dahua Switch"
       name: "Dahua Switch"
+      valuemaps:
+      - uuid: "ae936760efae46188ec69b479770c3c2"
+        name: "Interface status"
+        mappings:
+          - value: "1"
+            newvalue: "up"
+
+          - value: "2"
+            newvalue: "down"
+
+          - value: "3"
+            newvalue: "testing"
+
+          - value: "4"
+            newvalue: "unknown"
+
+          - value: "5"
+            newvalue: "dormant"
+
+          - value: "6"
+            newvalue: "notPresent"
+
+          - value: "7"
+            newvalue: "lowerLayerDown"
       description: |
         Full dynamic Dahua switch template with port discovery, traffic, errors, basic system info.
 
@@ -99,19 +123,48 @@ zabbix_export:
           snmp_oid: "discovery[{#IFINDEX},1.3.6.1.2.1.2.2.1.1]"
 
           item_prototypes:
+          
+            - uuid: "a364d0587c654620955cb652844d16a1"
+              name: "Port {#IFINDEX} description"
+              type: SNMP_AGENT
+              snmp_oid: "1.3.6.1.2.1.2.2.1.2.{#IFINDEX}"
+              key: "port.description[{#IFINDEX}]"
+              delay: "8h"
+              value_type: TEXT
+
+            - uuid: "fe200a18efc6482285c021d1b5434aa7"
+              name: "Port {#IFINDEX} inbound trafic"
+              type: SNMP_AGENT
+              snmp_oid: "1.3.6.1.2.1.2.2.1.10.{#IFINDEX}"
+              key: "port.inbound_trafic[{#IFINDEX}]"
+              delay: "1m"
+              value_type: UNSIGNED
+              units: "B"
+              
+            - uuid: "9e93a90608614a0f9356f37ca1d3d5ca"
+              name: "Port {#IFINDEX} outbound trafic"
+              type: SNMP_AGENT
+              snmp_oid: "1.3.6.1.2.1.2.2.1.16.{#IFINDEX}"
+              key: "port.outbound_trafic[{#IFINDEX}]"
+              delay: "1m"
+              value_type: UNSIGNED
+              units: "B"
+
             - uuid: "f3ff011b8e0246cc8e74198a528a0035"
               name: "Port {#IFINDEX} status"
               type: SNMP_AGENT
               snmp_oid: "1.3.6.1.2.1.2.2.1.8.{#IFINDEX}"
               key: "port.status[{#IFINDEX}]"
-              delay: "30s"
+              delay: "1m"
               value_type: UNSIGNED
+              valuemap:
+                name: "Interface status"
 
             - uuid: "6e7377da1b9e4165a0a8e2fdf3cc2f98"
               name: "Port {#IFINDEX} speed"
               type: SNMP_AGENT
               snmp_oid: "1.3.6.1.2.1.2.2.1.5.{#IFINDEX}"
               key: "port.speed[{#IFINDEX}]"
-              delay: "30s"
+              delay: "1h"
               value_type: UNSIGNED
               units: "bps"
